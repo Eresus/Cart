@@ -214,7 +214,28 @@ class Cart extends Plugin
 	 */
 	public function fetchItems($class = null)
 	{
-		;
+		$items = array();
+
+		if ($class !== null)
+		{
+			if (!isset($this->items[$class]))
+				return array();
+
+			foreach ($this->items[$class] as $id => $item)
+				$items []= array(
+					'class' => $class,
+					'id' => $id,
+					'count' => $item['count'],
+					'cost' => $item['cost']
+				);
+			return $items;
+		}
+
+		$classes = array_keys($this->items);
+		foreach ($classes as $class)
+			$items = array_merge($items, $this->fetchItems($class));
+
+		return $items;
 	}
 	//-----------------------------------------------------------------------------
 
