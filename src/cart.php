@@ -88,9 +88,17 @@ class Cart extends Plugin
 	 */
 	public function __construct()
 	{
+		global $Eresus;
+
 		parent::__construct();
+
 		$this->listenEvents('clientOnPageRender');
-		$this->loadFromCookies();
+
+		Core::setValue('core.template.templateDir', $Eresus->froot);
+    Core::setValue('core.template.compileDir', $Eresus->fdata . 'cache');
+    Core::setValue('core.template.charset', 'windows-1251');
+
+    $this->loadFromCookies();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -115,6 +123,10 @@ class Cart extends Plugin
 		global $Eresus;
 
 		parent::install();
+
+		$umask = umask(0000);
+		@mkdir($Eresus->fdata . 'cache');
+		umask($umask);
 
 		/* Копируем шаблоны */
 		$target = $Eresus->froot . 'templates/' . $this->name;
@@ -213,7 +225,21 @@ class Cart extends Plugin
 	 */
 	private function clientRenderBlock()
 	{
-		;
+		global $Eresus;
+
+		$tmpl = new Template('templates/' . $this->name . '/block.html');
+
+		$data = array('count' => 0, 'sum' => 0);
+
+		foreach ($this->items as $class)
+			foreach ($class as $item)
+			{
+				$data['count'] += $item['count'];
+				$data['sum'] += $item['cost'] * $item['count'];
+			}
+
+		$html = $tmpl->compile($data);
+		return $html;
 	}
 	//-----------------------------------------------------------------------------
 
