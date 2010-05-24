@@ -75,30 +75,86 @@ class CartTest extends ContentPlugin
 	 */
 	public function clientRenderContent()
 	{
+		if (HTTP::request()->getMethod() == 'POST')
+			$this->add();
+
+		if (arg('action') == 'clean')
+			$this->clean();
+
+		if (arg('action') == 'delete')
+			$this->delete();
+
 $html = <<<HTML
 <h2>Добавление товара</h2>
 <form action="./" method="post">
 	<table>
+		<tr><td>Класс</td><td><input type="text" name="class" /></td></tr>
 		<tr><td>ID</td><td><input type="text" name="id" /></td></tr>
 		<tr><td>Цена</td><td><input type="text" name="cost" /></td></tr>
 		<tr><td>Кол-во</td><td><input type="text" name="count" /></td></tr>
 	</table>
 	<div><button type="submit">Добавить</button></div>
 </form>
-
-<table>
-	<tr><th>Класс</th><th>ID</th><th>Цена</th><th>Кол-во</th></tr>
+<br /><br />
+<table border="1" cellpadding="2">
+	<tr><th>Класс</th><th>ID</th><th>Цена</th><th>Кол-во</th><td></td></tr>
 HTML;
 
 		$cart = $GLOBALS['Eresus']->plugins->load('cart');
 
 		$items = $cart->fetchItems();
 		foreach ($items as $item)
-			$html .= "<tr><td>{$item['class']}</td><td>{$item['id']}</td><td>{$item['cost']}</td><td>{$item['count']}</td></tr>";
+			$html .= "<tr><td>{$item['class']}</td><td>{$item['id']}</td><td>{$item['cost']}</td>".
+				"<td>{$item['count']}</td>".
+				"<td><a href=\"?action=delete&class={$item['class']}&id={$item['id']}\">X</a></td></tr>";
 
-		$html .= '</table>';
+$html .= <<<HTML
+</table>
+<a href="./?action=clean">Очистить корзину</a>
+HTML;
 
 		return $html;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Добавление товара
+	 */
+	private function add()
+	{
+		$cart = $GLOBALS['Eresus']->plugins->load('cart');
+
+		$cart->addItem(
+			arg('class'), // в качестве класса товара используем имя текущего плагина
+			arg('id'), // идентификатор товара
+			arg('count'), // количество заказанных единиц
+			arg('cost') // цена товара
+		);
+		HTTP::goback();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Очистка корзины
+	 */
+	private function clean()
+	{
+		$cart = $GLOBALS['Eresus']->plugins->load('cart');
+
+		$cart->clearAll();
+		HTTP::goback();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Удаление товара
+	 */
+	private function delete()
+	{
+		$cart = $GLOBALS['Eresus']->plugins->load('cart');
+
+		$cart->removeItem(arg('class'), arg('id'));
+		HTTP::goback();
 	}
 	//-----------------------------------------------------------------------------
 
