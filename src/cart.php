@@ -183,10 +183,10 @@ class Cart extends Plugin
 	/**
 	 * Добавляет товар в корзину
 	 *
-	 * @param string $class            Класс товара (класс плагина товаров)
-	 * @param string $id               Идентификатор товара
-	 * @param int    $count[optional]  Количество добавляемых товаров
-	 * @param float  $cost[optional]   Стоимость одного товара
+	 * @param string      $class            Класс товара (класс плагина товаров)
+	 * @param int|string  $id               Идентификатор товара
+	 * @param int         $count[optional]  Количество добавляемых товаров
+	 * @param float       $cost[optional]   Стоимость одного товара
 	 */
 	public function addItem($class, $id, $count = 1, $cost = 0)
 	{
@@ -236,6 +236,33 @@ class Cart extends Plugin
 			$items = array_merge($items, $this->fetchItems($class));
 
 		return $items;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Удаляет товар из корзины
+	 *
+	 * @param string     $class  Класс товара
+	 * @param int|string $id     Идентификатор товара
+	 * @return void
+	 */
+	public function removeItem($class, $id)
+	{
+		if (!isset($this->items[$class]))
+			return;
+
+		unset($this->items[$class][$id]);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Очищает корзину
+	 *
+	 * @return void
+	 */
+	public function clearAll()
+	{
+		$this->items = array();
 	}
 	//-----------------------------------------------------------------------------
 
