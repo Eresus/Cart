@@ -2,11 +2,9 @@
 /**
  * Корзина заказов
  *
- * Eresus 2.12
- *
  * Блок корзины заказов с API для добавления / удаления товаров
  *
- * @version 1.00
+ * @version ${product.version}
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
@@ -24,7 +22,7 @@
  * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
  * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
  *
- * @package cart
+ * @package Cart
  *
  * $Id$
  */
@@ -40,7 +38,7 @@ class Cart extends Plugin
 	 * Версия плагина
 	 * @var string
 	 */
-	public $version = '1.00a';
+	public $version = '${product.version}';
 
 	/**
 	 * Требуемая версия ядра
@@ -92,13 +90,13 @@ class Cart extends Plugin
 
 		parent::__construct();
 
-		$this->listenEvents('clientOnPageRender');
+		$this->listenEvents('clientOnStart', 'clientOnPageRender');
 
 		Core::setValue('core.template.templateDir', $Eresus->froot);
-    Core::setValue('core.template.compileDir', $Eresus->fdata . 'cache');
-    Core::setValue('core.template.charset', 'windows-1251');
+		Core::setValue('core.template.compileDir', $Eresus->fdata . 'cache');
+		Core::setValue('core.template.charset', 'windows-1251');
 
-    $this->loadFromCookies();
+		$this->loadFromCookies();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -138,7 +136,9 @@ class Cart extends Plugin
 		}
 		$files = glob($this->dirCode . 'templates/*.html');
 		foreach ($files as $file)
+		{
 			copy($file, $target . '/' . basename($file));
+		}
 	}
 	//-----------------------------------------------------------------------------
 
@@ -154,14 +154,53 @@ class Cart extends Plugin
 		useLib('templates');
 		$templates = new Templates();
 
+		$x = (int) $y;
+
 		/* Удаляем шаблоны */
 		$list = $templates->enum($this->name);
 		foreach ($list as $name => $desc)
+		{
 			$templates->delete($name, $this->name);
+		}
 
 		@rmdir($Eresus->froot . 'templates/' . $this->name);
 
 		parent::uninstall();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Обработка запросов от JS API
+	 *
+	 * @return void
+	 */
+	public function clientOnStart()
+	{
+		if (HTTP::request()->getFile() != 'cart.php')
+		{
+			return;
+		}
+
+		switch (arg('method'))
+		{
+			case 'addItem':
+				$this->addItem(arg('class', 'word'), arg('id', 'word'), arg('count', 'int'),
+					arg('cost', '[^0-9\.]'));
+			break;
+
+			case 'removeItem':
+				$this->removeItem(arg('class', 'word'), arg('id', 'word'));
+			break;
+		}
+
+		$html = $this->clientRenderBlock();
+
+		if (!preg_match('/^UTF-8$/i', CHARSET))
+		{
+			$html = iconv(CHARSET, 'UTF-8', $html);
+		}
+
+		die($html);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -173,9 +212,15 @@ class Cart extends Plugin
 	 */
 	public function clientOnPageRender($html)
 	{
-		// Подключть JS
+		global $page;
+
+		$page->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.min.js');
+		$page->linkScripts($this->urlCode . 'jquery.cookie.js');
+		$page->linkScripts($this->urlCode . 'api.js');
+
 		$block = $this->clientRenderBlock();
-		$html = preg_replace('/\$\(cart\)/i', $block, $html);
+		$html = preg_replace('/\$\(cart\)/i', $block,	$html);
+
 		return $html;
 	}
 	//-----------------------------------------------------------------------------
@@ -187,19 +232,27 @@ class Cart extends Plugin
 	 * @param int|string  $id               Идентификатор товара
 	 * @param int         $count[optional]  Количество добавляемых товаров
 	 * @param float       $cost[optional]   Стоимость одного товара
+	 *
+	 * @return void
+	 *
+	 * @since 1.00
 	 */
 	public function addItem($class, $id, $count = 1, $cost = 0)
 	{
 		/* Добавляем класс товаров, если его ещё нет */
 		if (!isset($this->items[$class]))
+		{
 			$this->items[$class] = array();
+		}
 
 		/* Добавляем товар, если его ещё нет */
 		if (!isset($this->items[$class][$id]))
+		{
 			$this->items[$class][$id] = array(
 				'cost' => $cost,
 				'count' => 0
 			);
+		}
 
 		// Добавляем товары
 		$this->items[$class][$id]['count'] += $count;
@@ -209,8 +262,10 @@ class Cart extends Plugin
 	/**
 	 * Возвращает содержимое корзины
 	 *
-	 * @param string $class[optional]
-	 * @return array()
+	 * @param string $class[optional]  Класс товаров
+	 * @return array
+	 *
+	 * @since 1.00
 	 */
 	public function fetchItems($class = null)
 	{
@@ -219,21 +274,27 @@ class Cart extends Plugin
 		if ($class !== null)
 		{
 			if (!isset($this->items[$class]))
+			{
 				return array();
+			}
 
 			foreach ($this->items[$class] as $id => $item)
+			{
 				$items []= array(
 					'class' => $class,
 					'id' => $id,
 					'count' => $item['count'],
 					'cost' => $item['cost']
 				);
+			}
 			return $items;
 		}
 
 		$classes = array_keys($this->items);
 		foreach ($classes as $class)
+		{
 			$items = array_merge($items, $this->fetchItems($class));
+		}
 
 		return $items;
 	}
@@ -244,12 +305,17 @@ class Cart extends Plugin
 	 *
 	 * @param string     $class  Класс товара
 	 * @param int|string $id     Идентификатор товара
+	 *
 	 * @return void
+	 *
+	 * @since 1.00
 	 */
 	public function removeItem($class, $id)
 	{
 		if (!isset($this->items[$class]))
+		{
 			return;
+		}
 
 		unset($this->items[$class][$id]);
 	}
@@ -259,6 +325,8 @@ class Cart extends Plugin
 	 * Очищает корзину
 	 *
 	 * @return void
+	 *
+	 * @since 1.00
 	 */
 	public function clearAll()
 	{
@@ -280,13 +348,18 @@ class Cart extends Plugin
 		$data = array('count' => 0, 'sum' => 0);
 
 		foreach ($this->items as $class)
+		{
 			foreach ($class as $item)
 			{
 				$data['count'] += $item['count'];
 				$data['sum'] += $item['cost'] * $item['count'];
 			}
+		}
 
 		$html = $tmpl->compile($data);
+
+		$html = '<div id="cart-block-container">' . $html . '</div>';
+
 		return $html;
 	}
 	//-----------------------------------------------------------------------------
