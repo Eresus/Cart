@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ $Id$
+ -->
+
+<project name="cart" default="build" basedir="./">
+
+	<property file="build.properties" />
+
+	<!--
+	=====================================================================
+		Prepare for build
+  =====================================================================
+  -->
+
+	<target name="prepare" depends="clean" description="Prepare for build">
+
+		<echo msg="Build directory: ${build.dir}" level="info" />
+
+		<echo msg="Create build directory..." level="info" />
+		<mkdir dir="${build.dir}" />
+
+		<!--
+			Check sources for coding standards
+		-->
+		<if>
+			<istrue value="${phpcs}" />
+			<then>
+				<phpcodesniffer
+					standard="Eresus"
+					haltonerror="false"
+				>
+					<formatter
+						type="${phpcs.format}"
+						outfile="${phpcs.output}"
+					/>
+					<fileset dir="src">
+						<include name="**/*.php" />
+						<exclude name=".svn" />
+					</fileset>
+				</phpcodesniffer>
+			</then>
+		</if>
+
+		<echo msg="Ready to build" level="info" />
+
+	</target>
+
+	<!--
+	=====================================================================
+		Clean up after build
+  =====================================================================
+  -->
+
+	<target name="clean" description="Clean up build">
+
+		<echo msg="Clean up: ${build.dir}..." level="info" />
+
+		<if>
+			<available file="${build.dir}" />
+
+			<then>
+				<delete includeemptydirs="true" failonerror="true">
+					<fileset dir="${build.dir}">
+						<include name="**/*" />
+						<exclude name=".svn" />
+						<exclude name=".svn/*" />
+					</fileset>
+				</delete>
+			</then>
+
+		</if>
+
+	</target>
+
+	<!--
+	=====================================================================
+		Build project
+  =====================================================================
+  -->
+
+	<target name="build" depends="prepare" description="Build project">
+
+		<copy todir="${build.dir}">
+			<fileset dir="src">
+				<include name="**" />
+				<exclude name=".svn" />
+			</fileset>
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+	</target>
+
+	<!--
+	=====================================================================
+		Build distributive
+  =====================================================================
+  -->
+
+	<target name="distr" depends="build" description="Build distributive">
+
+		<available file="${distr.dir}" type="dir" property="distr.dir.exists" />
+		
+		<if>
+			<not>
+				<isset property="${distr.dir.exists}" />
+			</not>
+			
+			<then>
+				<mkdir dir="${distr.dir}" />
+			</then>
+			
+		</if>
+		
+		<tar destfile="${distr.dir}/${phing.project.name}-${product.version}.tar.bz2" compression="bzip2">
+			<fileset dir="${build.dir}">
+				<include name="**" />
+			</fileset>
+		</tar>
+
+	</target>
+
+</project>

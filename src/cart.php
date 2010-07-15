@@ -1,68 +1,404 @@
 <?php
 /**
- * ÐšÐ¾Ñ€Ð·Ð¸Ð½Ð° Ð·Ð°ÐºÐ°Ð·Ð¾Ð²
+ * Êîðçèíà çàêàçîâ
  *
- * Eresus 2.12
+ * Áëîê êîðçèíû çàêàçîâ ñ API äëÿ äîáàâëåíèÿ / óäàëåíèÿ òîâàðîâ
  *
- * Ð‘Ð»Ð¾Ðº ÐºÐ¾Ñ€Ð·Ð¸Ð½Ñ‹ Ð·Ð°ÐºÐ°Ð·Ð¾Ð² Ñ API Ð´Ð»Ñ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ / ÑƒÐ´Ð°Ð»ÐµÐ½Ð¸Ñ Ñ‚Ð¾Ð²Ð°Ñ€Ð¾Ð²
- *
- * @version 1.00
+ * @version ${product.version}
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author ÐœÐ¸Ñ…Ð°Ð¸Ð» ÐšÑ€Ð°ÑÐ¸Ð»ÑŒÐ½Ð¸ÐºÐ¾Ð²
+ * @author Ìèõàèë Êðàñèëüíèêîâ
  *
- * Ð”Ð°Ð½Ð½Ð°Ñ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð° ÑÐ²Ð»ÑÐµÑ‚ÑÑ ÑÐ²Ð¾Ð±Ð¾Ð´Ð½Ñ‹Ð¼ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð½Ñ‹Ð¼ Ð¾Ð±ÐµÑÐ¿ÐµÑ‡ÐµÐ½Ð¸ÐµÐ¼. Ð’Ñ‹
- * Ð²Ð¿Ñ€Ð°Ð²Ðµ Ñ€Ð°ÑÐ¿Ñ€Ð¾ÑÑ‚Ñ€Ð°Ð½ÑÑ‚ÑŒ ÐµÐµ Ð¸/Ð¸Ð»Ð¸ Ð¼Ð¾Ð´Ð¸Ñ„Ð¸Ñ†Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ð² ÑÐ¾Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²Ð¸Ð¸ Ñ
- * ÑƒÑÐ»Ð¾Ð²Ð¸ÑÐ¼Ð¸ Ð²ÐµÑ€ÑÐ¸Ð¸ 2 Ð»Ð¸Ð±Ð¾ Ð¿Ð¾ Ð²Ð°ÑˆÐµÐ¼Ñƒ Ð²Ñ‹Ð±Ð¾Ñ€Ñƒ Ñ ÑƒÑÐ»Ð¾Ð²Ð¸ÑÐ¼Ð¸ Ð±Ð¾Ð»ÐµÐµ Ð¿Ð¾Ð·Ð´Ð½ÐµÐ¹
- * Ð²ÐµÑ€ÑÐ¸Ð¸ Ð¡Ñ‚Ð°Ð½Ð´Ð°Ñ€Ñ‚Ð½Ð¾Ð¹ ÐžÐ±Ñ‰ÐµÑÑ‚Ð²ÐµÐ½Ð½Ð¾Ð¹ Ð›Ð¸Ñ†ÐµÐ½Ð·Ð¸Ð¸ GNU, Ð¾Ð¿ÑƒÐ±Ð»Ð¸ÐºÐ¾Ð²Ð°Ð½Ð½Ð¾Ð¹ Free
+ * Äàííàÿ ïðîãðàììà ÿâëÿåòñÿ ñâîáîäíûì ïðîãðàììíûì îáåñïå÷åíèåì. Âû
+ * âïðàâå ðàñïðîñòðàíÿòü åå è/èëè ìîäèôèöèðîâàòü â ñîîòâåòñòâèè ñ
+ * óñëîâèÿìè âåðñèè 2 ëèáî ïî âàøåìó âûáîðó ñ óñëîâèÿìè áîëåå ïîçäíåé
+ * âåðñèè Ñòàíäàðòíîé Îáùåñòâåííîé Ëèöåíçèè GNU, îïóáëèêîâàííîé Free
  * Software Foundation.
  *
- * ÐœÑ‹ Ñ€Ð°ÑÐ¿Ñ€Ð¾ÑÑ‚Ñ€Ð°Ð½ÑÐµÐ¼ ÑÑ‚Ñƒ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñƒ Ð² Ð½Ð°Ð´ÐµÐ¶Ð´Ðµ Ð½Ð° Ñ‚Ð¾, Ñ‡Ñ‚Ð¾ Ð¾Ð½Ð° Ð±ÑƒÐ´ÐµÑ‚ Ð²Ð°Ð¼
- * Ð¿Ð¾Ð»ÐµÐ·Ð½Ð¾Ð¹, Ð¾Ð´Ð½Ð°ÐºÐ¾ ÐÐ• ÐŸÐ Ð•Ð”ÐžÐ¡Ð¢ÐÐ’Ð›Ð¯Ð•Ðœ ÐÐ ÐÐ•Ð• ÐÐ˜ÐšÐÐšÐ˜Ð¥ Ð“ÐÐ ÐÐÐ¢Ð˜Ð™, Ð² Ñ‚Ð¾Ð¼
- * Ñ‡Ð¸ÑÐ»Ðµ Ð“ÐÐ ÐÐÐ¢Ð˜Ð˜ Ð¢ÐžÐ’ÐÐ ÐÐžÐ“Ðž Ð¡ÐžÐ¡Ð¢ÐžÐ¯ÐÐ˜Ð¯ ÐŸÐ Ð˜ ÐŸÐ ÐžÐ”ÐÐ–Ð• Ð¸ ÐŸÐ Ð˜Ð“ÐžÐ”ÐÐžÐ¡Ð¢Ð˜ Ð”Ð›Ð¯
- * Ð˜Ð¡ÐŸÐžÐ›Ð¬Ð—ÐžÐ’ÐÐÐ˜Ð¯ Ð’ ÐšÐžÐÐšÐ Ð•Ð¢ÐÐ«Ð¥ Ð¦Ð•Ð›Ð¯Ð¥. Ð”Ð»Ñ Ð¿Ð¾Ð»ÑƒÑ‡ÐµÐ½Ð¸Ñ Ð±Ð¾Ð»ÐµÐµ Ð¿Ð¾Ð´Ñ€Ð¾Ð±Ð½Ð¾Ð¹
- * Ð¸Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ð¸ Ð¾Ð·Ð½Ð°ÐºÐ¾Ð¼ÑŒÑ‚ÐµÑÑŒ ÑÐ¾ Ð¡Ñ‚Ð°Ð½Ð´Ð°Ñ€Ñ‚Ð½Ð¾Ð¹ ÐžÐ±Ñ‰ÐµÑÑ‚Ð²ÐµÐ½Ð½Ð¾Ð¹ Ð›Ð¸Ñ†ÐµÐ½Ð·Ð¸ÐµÐ¹ GNU.
+ * Ìû ðàñïðîñòðàíÿåì ýòó ïðîãðàììó â íàäåæäå íà òî, ÷òî îíà áóäåò âàì
+ * ïîëåçíîé, îäíàêî ÍÅ ÏÐÅÄÎÑÒÀÂËßÅÌ ÍÀ ÍÅÅ ÍÈÊÀÊÈÕ ÃÀÐÀÍÒÈÉ, â òîì
+ * ÷èñëå ÃÀÐÀÍÒÈÈ ÒÎÂÀÐÍÎÃÎ ÑÎÑÒÎßÍÈß ÏÐÈ ÏÐÎÄÀÆÅ è ÏÐÈÃÎÄÍÎÑÒÈ ÄËß
+ * ÈÑÏÎËÜÇÎÂÀÍÈß Â ÊÎÍÊÐÅÒÍÛÕ ÖÅËßÕ. Äëÿ ïîëó÷åíèÿ áîëåå ïîäðîáíîé
+ * èíôîðìàöèè îçíàêîìüòåñü ñî Ñòàíäàðòíîé Îáùåñòâåííîé Ëèöåíçèåé GNU.
  *
- * @package cart
+ * @package Cart
  *
  * $Id$
  */
 
 /**
- * ÐšÐ¾Ñ€Ð·Ð¸Ð½Ð° Ð·Ð°ÐºÐ°Ð·Ð¾Ð²
+ * Êîðçèíà çàêàçîâ
  *
  * @package cart
  */
 class Cart extends Plugin
 {
 	/**
-	 * Ð’ÐµÑ€ÑÐ¸Ñ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð°
+	 * Âåðñèÿ ïëàãèíà
 	 * @var string
 	 */
-	public $version = '1.00a';
+	public $version = '${product.version}';
 
 	/**
-	 * Ð¢Ñ€ÐµÐ±ÑƒÐµÐ¼Ð°Ñ Ð²ÐµÑ€ÑÐ¸Ñ ÑÐ´Ñ€Ð°
+	 * Òðåáóåìàÿ âåðñèÿ ÿäðà
 	 * @var string
 	 */
 	public $kernel = '2.12';
 
 	/**
-	 * ÐÐ°Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð°
+	 * Íàçâàíèå ïëàãèíà
 	 * @var string
 	 */
-	public $title = 'ÐšÐ¾Ñ€Ð·Ð¸Ð½Ð° Ð·Ð°ÐºÐ°Ð·Ð¾Ð²';
+	public $title = 'Êîðçèíà çàêàçîâ';
 
 	/**
-	 * ÐžÐ¿Ð¸Ð°Ð½Ð¸Ðµ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð°
+	 * Îïèàíèå ïëàãèíà
 	 * @var string
 	 */
-	public $description = 'Ð‘Ð»Ð¾Ðº Ð·Ð°ÐºÐ°Ð·Ð°Ð½Ð½Ñ‹Ñ… Ñ‚Ð¾Ð²Ð°Ñ€Ð¾Ð²';
+	public $description = 'Áëîê çàêàçàííûõ òîâàðîâ';
 
 	/**
-	 * Ð¢Ð¸Ð¿ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð°
+	 * Òèï ïëàãèíà
 	 * @var string
 	 */
 	public $type = 'client';
+
+	/**
+	 * Íàñòðîéêè
+	 * @var array
+	 */
+	public $settings = array(
+		// Âðåìÿ æèçíè cookie â äíÿõ
+		'cookieLifeTime' => 3,
+	);
+
+	/**
+	 * Ñîäåðæèìîå êîðçèíû
+	 * @var array
+	 */
+	private $items = array();
+
+	/**
+	 * Êîíñòðóêòîð
+	 *
+	 * @return Cart
+	 */
+	public function __construct()
+	{
+		global $Eresus;
+
+		parent::__construct();
+
+		$this->listenEvents('clientOnStart', 'clientOnPageRender');
+
+		Core::setValue('core.template.templateDir', $Eresus->froot);
+		Core::setValue('core.template.compileDir', $Eresus->fdata . 'cache');
+		Core::setValue('core.template.charset', 'windows-1251');
+
+		$this->loadFromCookies();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Äåñòðóêòîð
+	 *
+	 * @return void
+	 */
+	public function __destruct()
+	{
+		$this->saveToCookies();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Óñòàíîâêà ïëàãèíà
+	 *
+	 * @return void
+	 */
+	public function install()
+	{
+		global $Eresus;
+
+		parent::install();
+
+		$umask = umask(0000);
+		@mkdir($Eresus->fdata . 'cache');
+		umask($umask);
+
+		/* Êîïèðóåì øàáëîíû */
+		$target = $Eresus->froot . 'templates/' . $this->name;
+		if (!FS::isDir($target))
+		{
+			$umask = umask(0000);
+			mkdir($target, 0777);
+			umask($umask);
+		}
+		$files = glob($this->dirCode . 'templates/*.html');
+		foreach ($files as $file)
+		{
+			copy($file, $target . '/' . basename($file));
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Óäàëåíèå ïëàãèíà
+	 *
+	 * @return void
+	 */
+	public function uninstall()
+	{
+		global $Eresus;
+
+		useLib('templates');
+		$templates = new Templates();
+
+		/* Óäàëÿåì øàáëîíû */
+		$list = $templates->enum($this->name);
+		$list = array_keys($list);
+		foreach ($list as $name)
+		{
+			$templates->delete($name, $this->name);
+		}
+
+		@rmdir($Eresus->froot . 'templates/' . $this->name);
+
+		parent::uninstall();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Îáðàáîòêà çàïðîñîâ îò JS API
+	 *
+	 * @return void
+	 */
+	public function clientOnStart()
+	{
+		if (HTTP::request()->getFile() != 'cart.php')
+		{
+			return;
+		}
+
+		switch (arg('method'))
+		{
+			case 'addItem':
+				$this->addItem(arg('class', 'word'), arg('id', 'word'), arg('count', 'int'),
+					arg('cost', '[^0-9\.]'));
+			break;
+
+			case 'removeItem':
+				$this->removeItem(arg('class', 'word'), arg('id', 'word'));
+			break;
+		}
+
+		$html = $this->clientRenderBlock();
+
+		if (!preg_match('/^UTF-8$/i', CHARSET))
+		{
+			$html = iconv(CHARSET, 'UTF-8', $html);
+		}
+
+		die($html);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Îòðèñîâêà áëîêà êîðçèíû
+	 *
+	 * @param string $html  HTML
+	 * @return string  HTML
+	 */
+	public function clientOnPageRender($html)
+	{
+		global $page;
+
+		$page->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.min.js');
+		$page->linkScripts($this->urlCode . 'jquery.cookie.js');
+		$page->linkScripts($this->urlCode . 'api.js');
+
+		$block = $this->clientRenderBlock();
+		$html = preg_replace('/\$\(cart\)/i', $block,	$html);
+
+		return $html;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Äîáàâëÿåò òîâàð â êîðçèíó
+	 *
+	 * @param string      $class            Êëàññ òîâàðà (êëàññ ïëàãèíà òîâàðîâ)
+	 * @param int|string  $id               Èäåíòèôèêàòîð òîâàðà
+	 * @param int         $count[optional]  Êîëè÷åñòâî äîáàâëÿåìûõ òîâàðîâ
+	 * @param float       $cost[optional]   Ñòîèìîñòü îäíîãî òîâàðà
+	 *
+	 * @return void
+	 *
+	 * @since 1.00
+	 */
+	public function addItem($class, $id, $count = 1, $cost = 0)
+	{
+		/* Äîáàâëÿåì êëàññ òîâàðîâ, åñëè åãî åù¸ íåò */
+		if (!isset($this->items[$class]))
+		{
+			$this->items[$class] = array();
+		}
+
+		/* Äîáàâëÿåì òîâàð, åñëè åãî åù¸ íåò */
+		if (!isset($this->items[$class][$id]))
+		{
+			$this->items[$class][$id] = array(
+				'cost' => $cost,
+				'count' => 0
+			);
+		}
+
+		// Äîáàâëÿåì òîâàðû
+		$this->items[$class][$id]['count'] += $count;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Âîçâðàùàåò ñîäåðæèìîå êîðçèíû
+	 *
+	 * @param string $class[optional]  Êëàññ òîâàðîâ
+	 * @return array
+	 *
+	 * @since 1.00
+	 */
+	public function fetchItems($class = null)
+	{
+		$items = array();
+
+		if ($class !== null)
+		{
+			if (!isset($this->items[$class]))
+			{
+				return array();
+			}
+
+			foreach ($this->items[$class] as $id => $item)
+			{
+				$items []= array(
+					'class' => $class,
+					'id' => $id,
+					'count' => $item['count'],
+					'cost' => $item['cost']
+				);
+			}
+			return $items;
+		}
+
+		$classes = array_keys($this->items);
+		foreach ($classes as $class)
+		{
+			$items = array_merge($items, $this->fetchItems($class));
+		}
+
+		return $items;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Óäàëÿåò òîâàð èç êîðçèíû
+	 *
+	 * @param string     $class  Êëàññ òîâàðà
+	 * @param int|string $id     Èäåíòèôèêàòîð òîâàðà
+	 *
+	 * @return void
+	 *
+	 * @since 1.00
+	 */
+	public function removeItem($class, $id)
+	{
+		if (!isset($this->items[$class]))
+		{
+			return;
+		}
+
+		unset($this->items[$class][$id]);
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Î÷èùàåò êîðçèíó
+	 *
+	 * @return void
+	 *
+	 * @since 1.00
+	 */
+	public function clearAll()
+	{
+		$this->items = array();
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Îòðèñîâûâàåò áëîê êîðçèíû
+	 *
+	 * @return string  HTML
+	 */
+	private function clientRenderBlock()
+	{
+		$tmpl = new Template('templates/' . $this->name . '/block.html');
+
+		$data = array('count' => 0, 'sum' => 0);
+
+		foreach ($this->items as $class)
+		{
+			foreach ($class as $item)
+			{
+				$data['count'] += $item['count'];
+				$data['sum'] += $item['cost'] * $item['count'];
+			}
+		}
+
+		$html = $tmpl->compile($data);
+
+		$html = '<div id="cart-block-container">' . $html . '</div>';
+
+		return $html;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Çàãðóæàåò ñîäåðæèìîå êîðçèíû èç cookie
+	 *
+	 * @return void
+	 */
+	private function loadFromCookies()
+	{
+		$this->items = array();
+
+		if (isset($_COOKIE[$this->name]))
+		{
+			@$items = unserialize($_COOKIE[$this->name]);
+
+			/* Ïðîâåðÿåì, ïðîøëà ëè äåñåðåàëèçàöèÿ */
+			if ($items === false)
+			{
+				eresus_log(__METHOD__, LOG_NOTICE, 'Cannot unserialize cookie value: "%s"',
+					$_COOKIE[$this->name]);
+				return;
+			}
+
+			// Çàïèñûâàåì ðåçóëüòàò
+			$this->items = $items;
+		}
+
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Ñîõðàíÿåò ñîäåðæèìîå êîðçèíû â cookie
+	 *
+	 * @return void
+	 */
+	private function saveToCookies()
+	{
+		$value = serialize($this->items);
+		setcookie($this->name, $value, time() + $this->settings['cookieLifeTime'] * 60 * 60 * 24, '/');
+	}
+	//-----------------------------------------------------------------------------
+
 }
