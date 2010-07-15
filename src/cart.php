@@ -154,11 +154,10 @@ class Cart extends Plugin
 		useLib('templates');
 		$templates = new Templates();
 
-		$x = (int) $y;
-
 		/* Удаляем шаблоны */
 		$list = $templates->enum($this->name);
-		foreach ($list as $name => $desc)
+		$list = array_keys($list);
+		foreach ($list as $name)
 		{
 			$templates->delete($name, $this->name);
 		}
@@ -341,8 +340,6 @@ class Cart extends Plugin
 	 */
 	private function clientRenderBlock()
 	{
-		global $Eresus;
-
 		$tmpl = new Template('templates/' . $this->name . '/block.html');
 
 		$data = array('count' => 0, 'sum' => 0);
