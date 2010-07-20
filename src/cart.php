@@ -372,13 +372,25 @@ class Cart extends Plugin
 
 		if (isset($_COOKIE[$this->name]))
 		{
-			@$items = unserialize($_COOKIE[$this->name]);
+			$cookieValue = $_COOKIE[$this->name];
+			/*
+			 * В PHP до 5.3 при включённых "магических кавычках" в куки могут присутствовать лишние слэши
+			 */
+			if (
+				! PHP::checkVersion('5.3') &&
+				get_magic_quotes_gpc()
+			)
+			{
+				$cookieValue = stripslashes($cookieValue);
+			}
 
-			/* Проверяем, прошла ли десереализация */
+			@$items = unserialize($cookieValue);
+
+			/* Проверяем, прошла ли десериализация */
 			if ($items === false)
 			{
 				eresus_log(__METHOD__, LOG_NOTICE, 'Cannot unserialize cookie value: "%s"',
-					$_COOKIE[$this->name]);
+					$cookieValue);
 				return;
 			}
 
