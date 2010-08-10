@@ -187,6 +187,10 @@ class Cart extends Plugin
 					arg('cost', '[^0-9\.]'));
 			break;
 
+			case 'changeAmount':
+				$this->changeAmount(arg('class', 'word'), arg('id', 'word'), arg('amount', 'int'));
+			break;
+
 			case 'clearAll':
 				$this->clearAll();
 			break;
@@ -264,6 +268,38 @@ class Cart extends Plugin
 
 		// Добавляем товары
 		$this->items[$class][$id]['count'] += $count;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Изменяет количество товара в корзине
+	 *
+	 * @param string      $class   Класс товара (класс плагина товаров)
+	 * @param int|string  $id      Идентификатор товара
+	 * @param int         $amount  Новое количество добавляемых товаров
+	 *
+	 * @return void
+	 *
+	 * @since 1.00
+	 */
+	public function changeAmount($class, $id, $amount)
+	{
+		if (
+			!isset($this->items[$class]) ||
+			!isset($this->items[$class][$id])
+		)
+		{
+			return;
+		}
+
+		if ($amount < 1)
+		{
+			$this->removeItem($class, $id);
+		}
+		else
+		{
+			$this->items[$class][$id]['count'] = $amount;
+		}
 	}
 	//-----------------------------------------------------------------------------
 
