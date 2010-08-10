@@ -101,6 +101,7 @@ $(cart)
 </td><td style="vertical-align: top">
 	<h2>JS API</h2>
 		<div><button onclick="cart.addItem('someClass', 123, 1, 10.5)">Добавить единицу товара</button></div>
+		<div><button onclick="cart.clearAll()">Очистить корзину</button></div>
 		<div><button onclick="cart.removeItem('someClass', 123, 1)">Удалить товар</button></div>
 </td></tr></table>
 <br /><br />
