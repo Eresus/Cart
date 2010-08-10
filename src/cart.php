@@ -187,6 +187,10 @@ class Cart extends Plugin
 					arg('cost', '[^0-9\.]'));
 			break;
 
+			case 'clearAll':
+				$this->clearAll();
+			break;
+
 			case 'removeItem':
 				$this->removeItem(arg('class', 'word'), arg('id', 'word'));
 			break;
