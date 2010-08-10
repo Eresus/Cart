@@ -90,24 +90,12 @@ class Cart extends Plugin
 
 		parent::__construct();
 
-		$this->listenEvents('clientOnStart', 'clientOnPageRender');
+		$this->listenEvents('clientOnStart', 'clientOnPageRender', 'clientBeforeSend');
 
 		Core::setValue('core.template.templateDir', $Eresus->froot);
 		Core::setValue('core.template.compileDir', $Eresus->fdata . 'cache');
 		Core::setValue('core.template.charset', 'windows-1251');
 
-		$this->loadFromCookies();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Деструктор
-	 *
-	 * @return void
-	 */
-	public function __destruct()
-	{
-		$this->saveToCookies();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -175,6 +163,8 @@ class Cart extends Plugin
 	 */
 	public function clientOnStart()
 	{
+		$this->loadFromCookies();
+
 		if (HTTP::request()->getFile() != 'cart.php')
 		{
 			return;
@@ -207,6 +197,7 @@ class Cart extends Plugin
 			$html = iconv(CHARSET, 'UTF-8', $html);
 		}
 
+		$this->saveToCookies();
 		die($html);
 	}
 	//-----------------------------------------------------------------------------
@@ -229,6 +220,19 @@ class Cart extends Plugin
 		$html = preg_replace('/\$\(cart\)/i', $block,	$html);
 
 		return $html;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Действия перед отправкой контента браузеру
+	 *
+	 * @param string $content
+	 */
+	public function clientBeforeSend($content)
+	{
+		$this->saveToCookies();
+
+		return $content;
 	}
 	//-----------------------------------------------------------------------------
 
