@@ -90,24 +90,12 @@ class Cart extends Plugin
 
 		parent::__construct();
 
-		$this->listenEvents('clientOnStart', 'clientOnPageRender');
+		$this->listenEvents('clientOnStart', 'clientOnPageRender', 'clientBeforeSend');
 
 		Core::setValue('core.template.templateDir', $Eresus->froot);
 		Core::setValue('core.template.compileDir', $Eresus->fdata . 'cache');
 		Core::setValue('core.template.charset', 'windows-1251');
 
-		$this->loadFromCookies();
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Деструктор
-	 *
-	 * @return void
-	 */
-	public function __destruct()
-	{
-		$this->saveToCookies();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -175,6 +163,8 @@ class Cart extends Plugin
 	 */
 	public function clientOnStart()
 	{
+		$this->loadFromCookies();
+
 		if (HTTP::request()->getFile() != 'cart.php')
 		{
 			return;
@@ -185,6 +175,14 @@ class Cart extends Plugin
 			case 'addItem':
 				$this->addItem(arg('class', 'word'), arg('id', 'word'), arg('count', 'int'),
 					arg('cost', '[^0-9\.]'));
+			break;
+
+			case 'changeAmount':
+				$this->changeAmount(arg('class', 'word'), arg('id', 'word'), arg('amount', 'int'));
+			break;
+
+			case 'clearAll':
+				$this->clearAll();
 			break;
 
 			case 'removeItem':
@@ -199,6 +197,7 @@ class Cart extends Plugin
 			$html = iconv(CHARSET, 'UTF-8', $html);
 		}
 
+		$this->saveToCookies();
 		die($html);
 	}
 	//-----------------------------------------------------------------------------
@@ -225,6 +224,19 @@ class Cart extends Plugin
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Действия перед отправкой контента браузеру
+	 *
+	 * @param string $content
+	 */
+	public function clientBeforeSend($content)
+	{
+		$this->saveToCookies();
+
+		return $content;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
 	 * Добавляет товар в корзину
 	 *
 	 * @param string      $class            Класс товара (класс плагина товаров)
@@ -238,6 +250,11 @@ class Cart extends Plugin
 	 */
 	public function addItem($class, $id, $count = 1, $cost = 0)
 	{
+		if ($count < 1 || $cost < 0)
+		{
+			return;
+		}
+
 		/* Добавляем класс товаров, если его ещё нет */
 		if (!isset($this->items[$class]))
 		{
@@ -255,6 +272,38 @@ class Cart extends Plugin
 
 		// Добавляем товары
 		$this->items[$class][$id]['count'] += $count;
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Изменяет количество товара в корзине
+	 *
+	 * @param string      $class   Класс товара (класс плагина товаров)
+	 * @param int|string  $id      Идентификатор товара
+	 * @param int         $amount  Новое количество добавляемых товаров
+	 *
+	 * @return void
+	 *
+	 * @since 1.00
+	 */
+	public function changeAmount($class, $id, $amount)
+	{
+		if (
+			!isset($this->items[$class]) ||
+			!isset($this->items[$class][$id])
+		)
+		{
+			return;
+		}
+
+		if ($amount < 1)
+		{
+			$this->removeItem($class, $id);
+		}
+		else
+		{
+			$this->items[$class][$id]['count'] = $amount;
+		}
 	}
 	//-----------------------------------------------------------------------------
 
