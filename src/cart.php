@@ -242,6 +242,11 @@ class Cart extends Plugin
 	 */
 	public function addItem($class, $id, $count = 1, $cost = 0)
 	{
+		if ($count < 1 || $cost < 0)
+		{
+			return;
+		}
+
 		/* Добавляем класс товаров, если его ещё нет */
 		if (!isset($this->items[$class]))
 		{
