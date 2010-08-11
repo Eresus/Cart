@@ -53,7 +53,7 @@ class Cart extends Plugin
 	public $title = 'Корзина заказов';
 
 	/**
-	 * Опиание плагина
+	 * Описание плагина
 	 * @var string
 	 */
 	public $description = 'Блок заказанных товаров';
@@ -92,9 +92,20 @@ class Cart extends Plugin
 
 		$this->listenEvents('clientOnStart', 'clientOnPageRender', 'clientBeforeSend');
 
-		Core::setValue('core.template.templateDir', $Eresus->froot);
-		Core::setValue('core.template.compileDir', $Eresus->fdata . 'cache');
-		Core::setValue('core.template.charset', 'windows-1251');
+		if (!Core::getValue('core.template.templateDir'))
+		{
+			Core::setValue('core.template.templateDir', $Eresus->froot);
+		}
+
+		if (!Core::getValue('core.template.compileDir'))
+		{
+			Core::setValue('core.template.compileDir', $Eresus->fdata . 'cache');
+		}
+
+		if (!Core::getValue('core.template.charset'))
+		{
+			Core::setValue('core.template.charset', 'windows-1251');
+		}
 
 	}
 	//-----------------------------------------------------------------------------
