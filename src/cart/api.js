@@ -32,10 +32,10 @@ var cart =
 	/**
 	 * Добавляет товар в корзину
 	 *
-	 * @param {String}  className        Класс товара (класс плагина товаров)
-	 * @param {String}  id               Идентификатор товара
-	 * @param {Integer} count[optional]  Количество добавляемых товаров
-	 * @param {Float}   cost[optional]   Стоимость одного товара
+	 * @param {String}  className  Класс товара (класс плагина товаров)
+	 * @param {String}  id         Идентификатор товара
+	 * @param {Integer} count      Количество добавляемых товаров
+	 * @param {Number}  cost       Стоимость одного товара
 	 *
 	 * @since 1.00
 	 */
@@ -95,7 +95,7 @@ var cart =
 	 * блока корзины. 
 	 * 
 	 * @param {String} method  Имя метода PHP API
-	 * @param {Array}  args    Аргументы
+	 * @param {Object} args    Аргументы
 	 */
 	callAPI: function (method, args)
 	{
