@@ -77,7 +77,7 @@ class Cart extends Plugin
 	 * Содержимое корзины
 	 * @var array
 	 */
-	private $items = array();
+	private $items = null;
 
 	/**
 	 * Конструктор
@@ -88,7 +88,7 @@ class Cart extends Plugin
 	{
 		parent::__construct();
 
-		$this->listenEvents('clientOnStart', 'clientOnPageRender', 'clientBeforeSend');
+		$this->listenEvents('clientOnStart', 'clientOnPageRender');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -156,8 +156,6 @@ class Cart extends Plugin
 	 */
 	public function clientOnStart()
 	{
-		$this->loadFromCookies();
-
 		if (HTTP::request()->getFile() != 'cart.php')
 		{
 			return;
@@ -184,8 +182,6 @@ class Cart extends Plugin
 		}
 
 		$html = $this->clientRenderBlock();
-
-		$this->saveToCookies();
 		die($html);
 	}
 	//-----------------------------------------------------------------------------
@@ -212,21 +208,6 @@ class Cart extends Plugin
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Действия перед отправкой контента браузеру
-	 *
-	 * @param string $content
-	 *
-	 * @return string
-	 */
-	public function clientBeforeSend($content)
-	{
-		$this->saveToCookies();
-
-		return $content;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
 	 * Добавляет товар в корзину
 	 *
 	 * @param string      $class  Класс товара (класс плагина товаров)
@@ -240,6 +221,7 @@ class Cart extends Plugin
 	 */
 	public function addItem($class, $id, $count = 1, $cost = 0)
 	{
+		$this->loadFromCookies();
 		if ($count < 1 || $cost < 0)
 		{
 			return;
@@ -262,6 +244,7 @@ class Cart extends Plugin
 
 		// Добавляем товары
 		$this->items[$class][$id]['count'] += $count;
+		$this->saveToCookies();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -278,6 +261,7 @@ class Cart extends Plugin
 	 */
 	public function changeAmount($class, $id, $amount)
 	{
+		$this->loadFromCookies;
 		if (
 			!isset($this->items[$class]) ||
 			!isset($this->items[$class][$id])
@@ -294,6 +278,7 @@ class Cart extends Plugin
 		{
 			$this->items[$class][$id]['count'] = $amount;
 		}
+		$this->saveToCookies();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -308,6 +293,7 @@ class Cart extends Plugin
 	 */
 	public function fetchItems($class = null)
 	{
+		$this->loadFromCookies();
 		$items = array();
 
 		if ($class !== null)
@@ -350,13 +336,15 @@ class Cart extends Plugin
 	 * @since 1.00
 	 */
 	public function removeItem($class, $id)
-	{
+	{ 
+		$this->loadFromCookies();
 		if (!isset($this->items[$class]))
 		{
 			return;
 		}
 
 		unset($this->items[$class][$id]);
+		$this->saveToCookies();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -369,7 +357,9 @@ class Cart extends Plugin
 	 */
 	public function clearAll()
 	{
+		$this->loadFromCookies();
 		$this->items = array();
+		$this->saveToCookies();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -408,13 +398,17 @@ class Cart extends Plugin
 	 */
 	private function loadFromCookies()
 	{
+		if ($this->items !== null)
+		{
+			return;
+		}
 		$this->items = array();
 
 		if (isset($_COOKIE[$this->name]))
 		{
 			$cookieValue = $_COOKIE[$this->name];
 			/*
-			 * В PHP до 5.3 при включённых "магических кавычках" в куки могут присутствовать лишние слэши
+			 * В PHP до 5.3 при включённых "магических кавычках" в куки могут присутствовать лишние	слэши
 			 */
 			if (
 				! PHP::checkVersion('5.3') &&
@@ -437,7 +431,6 @@ class Cart extends Plugin
 			// Записываем результат
 			$this->items = $items;
 		}
-
 	}
 	//-----------------------------------------------------------------------------
 
