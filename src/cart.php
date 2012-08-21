@@ -99,10 +99,10 @@ class Cart extends Plugin
 	 */
 	public function install()
 	{
-		global $Eresus;
-
 		parent::install();
 
+		$Eresus = Eresus_CMS::getLegacyKernel();
+		
 		$umask = umask(0000);
 		@mkdir($Eresus->fdata . 'cache');
 		umask($umask);
@@ -130,8 +130,6 @@ class Cart extends Plugin
 	 */
 	public function uninstall()
 	{
-		global $Eresus;
-
 		useLib('templates');
 		$templates = new Templates();
 
@@ -143,7 +141,7 @@ class Cart extends Plugin
 			$templates->delete($name, $this->name);
 		}
 
-		@rmdir($Eresus->froot . 'templates/' . $this->name);
+		@rmdir(Eresus_CMS::getLegacyKernel()->froot . 'templates/' . $this->name);
 
 		parent::uninstall();
 	}
