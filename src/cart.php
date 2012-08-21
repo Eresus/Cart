@@ -196,8 +196,7 @@ class Cart extends Plugin
 	{
 		$page = Eresus_Kernel::app()->getPage();
 
-		$page->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.min.js');
-		$page->linkScripts($this->urlCode . 'jquery.cookie.js');
+		$page->linkJsLib('jquery', 'cookie');
 		$page->linkScripts($this->urlCode . 'api.js');
 
 		$block = $this->clientRenderBlock();
