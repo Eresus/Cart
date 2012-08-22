@@ -94,19 +94,26 @@ var cart =
 	 * Отправляет AJAX-запрос к PHP API. В случае успеха вызывает метод updateBlock для обновления
 	 * блока корзины. 
 	 * 
-	 * @param {String} method  Имя метода PHP API
-	 * @param {Object} args    Аргументы
+	 * @param {String}   method    имя метода PHP API
+	 * @param {Object}   args      аргументы
+	 * @param {Function} callback  функция, которая будет вызвана по завершении
 	 */
 	callAPI: function (method, args)
 	{
+		var callback = arguments.length > 2 ? arguments[2] : undefined;
+
 		args.method = method;
-		
+
+		var self = this;
 		jQuery.ajax({
 			async: true,
 			context: this,
 			data: args,
 			dataType: "html",
-			success: this.updateBlock,
+			success: function (data, textStatus, request)
+			{
+				self.updateBlock(data, textStatus, request, callback);
+			},
 			url: "cart.php"
 		});
 	},
@@ -118,10 +125,12 @@ var cart =
 	 * @param {String}         data
 	 * @param {String}         textStatus
 	 * @param {XMLHttpRequest} request
+	 * @param {Function}       callback  функция, которая надо вызвать по завершении
 	 */
-	updateBlock: function (data, textStatus, request)
+	updateBlock: function (data, textStatus, request, callback)
 	{
 		jQuery("#cart-block-container").replaceWith(data);
+		callback();
 	}
 	//-----------------------------------------------------------------------------
 

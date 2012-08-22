@@ -369,12 +369,15 @@ class Cart extends Plugin
 
 		$data = array('count' => 0, 'sum' => 0);
 
-		foreach ($this->items as $class)
+		if ($this->items)
 		{
-			foreach ($class as $item)
+			foreach ($this->items as $class)
 			{
-				$data['count'] += $item['count'];
-				$data['sum'] += $item['cost'] * $item['count'];
+				foreach ($class as $item)
+				{
+					$data['count'] += $item['count'];
+					$data['sum'] += $item['cost'] * $item['count'];
+				}
 			}
 		}
 
