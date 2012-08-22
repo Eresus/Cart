@@ -23,8 +23,6 @@
  * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
  *
  * @package Cart
- *
- * $Id$
  */
 
 /**
@@ -258,7 +256,7 @@ class Cart extends Plugin
 	 */
 	public function changeAmount($class, $id, $amount)
 	{
-		$this->loadFromCookies;
+		$this->loadFromCookies();
 		if (
 			!isset($this->items[$class]) ||
 			!isset($this->items[$class][$id])
