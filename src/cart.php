@@ -1,131 +1,111 @@
 <?php
 /**
- * Корзина заказов
+ * РљРѕСЂР·РёРЅР° Р·Р°РєР°Р·РѕРІ
  *
- * Блок корзины заказов с API для добавления / удаления товаров
+ * Р‘Р»РѕРє РєРѕСЂР·РёРЅС‹ Р·Р°РєР°Р·РѕРІ СЃ API РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ / СѓРґР°Р»РµРЅРёСЏ С‚РѕРІР°СЂРѕРІ
  *
  * @version ${product.version}
  *
  * @copyright 2010, Eresus Project, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author Михаил Красильников
+ * @author РњРёС…Р°РёР» РљСЂР°СЃРёР»СЊРЅРёРєРѕРІ
  *
- * Данная программа является свободным программным обеспечением. Вы
- * вправе распространять ее и/или модифицировать в соответствии с
- * условиями версии 2 либо по вашему выбору с условиями более поздней
- * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Р”Р°РЅРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° СЏРІР»СЏРµС‚СЃСЏ СЃРІРѕР±РѕРґРЅС‹Рј РїСЂРѕРіСЂР°РјРјРЅС‹Рј РѕР±РµСЃРїРµС‡РµРЅРёРµРј. Р’С‹
+ * РІРїСЂР°РІРµ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏС‚СЊ РµРµ Рё/РёР»Рё РјРѕРґРёС„РёС†РёСЂРѕРІР°С‚СЊ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ
+ * СѓСЃР»РѕРІРёСЏРјРё РІРµСЂСЃРёРё 2 Р»РёР±Рѕ РїРѕ РІР°С€РµРјСѓ РІС‹Р±РѕСЂСѓ СЃ СѓСЃР»РѕРІРёСЏРјРё Р±РѕР»РµРµ РїРѕР·РґРЅРµР№
+ * РІРµСЂСЃРёРё РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё GNU, РѕРїСѓР±Р»РёРєРѕРІР°РЅРЅРѕР№ Free
  * Software Foundation.
  *
- * Мы распространяем эту программу в надежде на то, что она будет вам
- * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
- * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
- * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
- * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ * РњС‹ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏРµРј СЌС‚Сѓ РїСЂРѕРіСЂР°РјРјСѓ РІ РЅР°РґРµР¶РґРµ РЅР° С‚Рѕ, С‡С‚Рѕ РѕРЅР° Р±СѓРґРµС‚ РІР°Рј
+ * РїРѕР»РµР·РЅРѕР№, РѕРґРЅР°РєРѕ РќР• РџР Р•Р”РћРЎРўРђР’Р›РЇР•Рњ РќРђ РќР•Р• РќРРљРђРљРРҐ Р“РђР РђРќРўРР™, РІ С‚РѕРј
+ * С‡РёСЃР»Рµ Р“РђР РђРќРўРР РўРћР’РђР РќРћР“Рћ РЎРћРЎРўРћРЇРќРРЇ РџР Р РџР РћР”РђР–Р• Рё РџР РР“РћР”РќРћРЎРўР Р”Р›РЇ
+ * РРЎРџРћР›Р¬Р—РћР’РђРќРРЇ Р’ РљРћРќРљР Р•РўРќР«РҐ Р¦Р•Р›РЇРҐ. Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р±РѕР»РµРµ РїРѕРґСЂРѕР±РЅРѕР№
+ * РёРЅС„РѕСЂРјР°С†РёРё РѕР·РЅР°РєРѕРјСЊС‚РµСЃСЊ СЃРѕ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРµР№ GNU.
  *
  * @package Cart
- *
- * $Id$
  */
 
 /**
- * Корзина заказов
+ * РљРѕСЂР·РёРЅР° Р·Р°РєР°Р·РѕРІ
  *
- * @package cart
+ * @package Cart
  */
 class Cart extends Plugin
 {
 	/**
-	 * Версия плагина
+	 * Р’РµСЂСЃРёСЏ РїР»Р°РіРёРЅР°
 	 * @var string
 	 */
 	public $version = '${product.version}';
 
 	/**
-	 * Требуемая версия ядра
+	 * РўСЂРµР±СѓРµРјР°СЏ РІРµСЂСЃРёСЏ СЏРґСЂР°
 	 * @var string
 	 */
-	public $kernel = '2.12';
+	public $kernel = '3.00b';
 
 	/**
-	 * Название плагина
+	 * РќР°Р·РІР°РЅРёРµ РїР»Р°РіРёРЅР°
 	 * @var string
 	 */
-	public $title = 'Корзина заказов';
+	public $title = 'РљРѕСЂР·РёРЅР° Р·Р°РєР°Р·РѕРІ';
 
 	/**
-	 * Описание плагина
+	 * РћРїРёСЃР°РЅРёРµ РїР»Р°РіРёРЅР°
 	 * @var string
 	 */
-	public $description = 'Блок заказанных товаров';
+	public $description = 'Р‘Р»РѕРє Р·Р°РєР°Р·Р°РЅРЅС‹С… С‚РѕРІР°СЂРѕРІ';
 
 	/**
-	 * Тип плагина
+	 * РўРёРї РїР»Р°РіРёРЅР°
 	 * @var string
 	 */
 	public $type = 'client';
 
 	/**
-	 * Настройки
+	 * РќР°СЃС‚СЂРѕР№РєРё
 	 * @var array
 	 */
 	public $settings = array(
-		// Время жизни cookie в днях
+		// Р’СЂРµРјСЏ Р¶РёР·РЅРё cookie РІ РґРЅСЏС…
 		'cookieLifeTime' => 3,
 	);
 
 	/**
-	 * Содержимое корзины
+	 * РЎРѕРґРµСЂР¶РёРјРѕРµ РєРѕСЂР·РёРЅС‹
 	 * @var array
 	 */
-	private $items = array();
+	private $items = null;
 
 	/**
-	 * Конструктор
+	 * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 	 *
 	 * @return Cart
 	 */
 	public function __construct()
 	{
-		global $Eresus;
-
 		parent::__construct();
 
-		$this->listenEvents('clientOnStart', 'clientOnPageRender', 'clientBeforeSend');
-
-		if (!Core::getValue('core.template.templateDir'))
-		{
-			Core::setValue('core.template.templateDir', $Eresus->froot);
-		}
-
-		if (!Core::getValue('core.template.compileDir'))
-		{
-			Core::setValue('core.template.compileDir', $Eresus->fdata . 'cache');
-		}
-
-		if (!Core::getValue('core.template.charset'))
-		{
-			Core::setValue('core.template.charset', 'windows-1251');
-		}
-
+		$this->listenEvents('clientOnStart', 'clientOnPageRender');
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Установка плагина
+	 * РЈСЃС‚Р°РЅРѕРІРєР° РїР»Р°РіРёРЅР°
 	 *
 	 * @return void
 	 */
 	public function install()
 	{
-		global $Eresus;
-
 		parent::install();
 
+		$Eresus = Eresus_CMS::getLegacyKernel();
+		
 		$umask = umask(0000);
 		@mkdir($Eresus->fdata . 'cache');
 		umask($umask);
 
-		/* Копируем шаблоны */
+		/* РљРѕРїРёСЂСѓРµРј С€Р°Р±Р»РѕРЅС‹ */
 		$target = $Eresus->froot . 'templates/' . $this->name;
 		if (!FS::isDir($target))
 		{
@@ -142,18 +122,16 @@ class Cart extends Plugin
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Удаление плагина
+	 * РЈРґР°Р»РµРЅРёРµ РїР»Р°РіРёРЅР°
 	 *
 	 * @return void
 	 */
 	public function uninstall()
 	{
-		global $Eresus;
-
 		useLib('templates');
 		$templates = new Templates();
 
-		/* Удаляем шаблоны */
+		/* РЈРґР°Р»СЏРµРј С€Р°Р±Р»РѕРЅС‹ */
 		$list = $templates->enum($this->name);
 		$list = array_keys($list);
 		foreach ($list as $name)
@@ -161,21 +139,19 @@ class Cart extends Plugin
 			$templates->delete($name, $this->name);
 		}
 
-		@rmdir($Eresus->froot . 'templates/' . $this->name);
+		@rmdir(Eresus_CMS::getLegacyKernel()->froot . 'templates/' . $this->name);
 
 		parent::uninstall();
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Обработка запросов от JS API
+	 * РћР±СЂР°Р±РѕС‚РєР° Р·Р°РїСЂРѕСЃРѕРІ РѕС‚ JS API
 	 *
 	 * @return void
 	 */
 	public function clientOnStart()
 	{
-		$this->loadFromCookies();
-
 		if (HTTP::request()->getFile() != 'cart.php')
 		{
 			return;
@@ -186,74 +162,53 @@ class Cart extends Plugin
 			case 'addItem':
 				$this->addItem(arg('class', 'word'), arg('id', 'word'), arg('count', 'int'),
 					arg('cost', '[^0-9\.]'));
-			break;
+				break;
 
 			case 'changeAmount':
 				$this->changeAmount(arg('class', 'word'), arg('id', 'word'), arg('amount', 'int'));
-			break;
+				break;
 
 			case 'clearAll':
 				$this->clearAll();
-			break;
+				break;
 
 			case 'removeItem':
 				$this->removeItem(arg('class', 'word'), arg('id', 'word'));
-			break;
+				break;
 		}
 
 		$html = $this->clientRenderBlock();
-
-		if (!preg_match('/^UTF-8$/i', CHARSET))
-		{
-			$html = iconv(CHARSET, 'UTF-8', $html);
-		}
-
-		$this->saveToCookies();
 		die($html);
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Отрисовка блока корзины
+	 * РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєР° РєРѕСЂР·РёРЅС‹
 	 *
 	 * @param string $html  HTML
 	 * @return string  HTML
 	 */
 	public function clientOnPageRender($html)
 	{
-		global $page;
+		$page = Eresus_Kernel::app()->getPage();
 
-		$page->linkScripts($GLOBALS['Eresus']->root . 'core/jquery/jquery.min.js');
-		$page->linkScripts($this->urlCode . 'jquery.cookie.js');
+		$page->linkJsLib('jquery', 'cookie');
 		$page->linkScripts($this->urlCode . 'api.js');
 
 		$block = $this->clientRenderBlock();
-		$html = preg_replace('/\$\(cart\)/i', $block,	$html);
+		$html = preg_replace('/\$\(cart\)/ui', $block,	$html);
 
 		return $html;
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Действия перед отправкой контента браузеру
+	 * Р”РѕР±Р°РІР»СЏРµС‚ С‚РѕРІР°СЂ РІ РєРѕСЂР·РёРЅСѓ
 	 *
-	 * @param string $content
-	 */
-	public function clientBeforeSend($content)
-	{
-		$this->saveToCookies();
-
-		return $content;
-	}
-	//-----------------------------------------------------------------------------
-
-	/**
-	 * Добавляет товар в корзину
-	 *
-	 * @param string      $class            Класс товара (класс плагина товаров)
-	 * @param int|string  $id               Идентификатор товара
-	 * @param int         $count[optional]  Количество добавляемых товаров
-	 * @param float       $cost[optional]   Стоимость одного товара
+	 * @param string      $class  РљР»Р°СЃСЃ С‚РѕРІР°СЂР° (РєР»Р°СЃСЃ РїР»Р°РіРёРЅР° С‚РѕРІР°СЂРѕРІ)
+	 * @param int|string  $id     РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РѕРІР°СЂР°
+	 * @param int         $count  РљРѕР»РёС‡РµСЃС‚РІРѕ РґРѕР±Р°РІР»СЏРµРјС‹С… С‚РѕРІР°СЂРѕРІ
+	 * @param float|int   $cost   РЎС‚РѕРёРјРѕСЃС‚СЊ РѕРґРЅРѕРіРѕ С‚РѕРІР°СЂР°
 	 *
 	 * @return void
 	 *
@@ -261,18 +216,19 @@ class Cart extends Plugin
 	 */
 	public function addItem($class, $id, $count = 1, $cost = 0)
 	{
+		$this->loadFromCookies();
 		if ($count < 1 || $cost < 0)
 		{
 			return;
 		}
 
-		/* Добавляем класс товаров, если его ещё нет */
+		/* Р”РѕР±Р°РІР»СЏРµРј РєР»Р°СЃСЃ С‚РѕРІР°СЂРѕРІ, РµСЃР»Рё РµРіРѕ РµС‰С‘ РЅРµС‚ */
 		if (!isset($this->items[$class]))
 		{
 			$this->items[$class] = array();
 		}
 
-		/* Добавляем товар, если его ещё нет */
+		/* Р”РѕР±Р°РІР»СЏРµРј С‚РѕРІР°СЂ, РµСЃР»Рё РµРіРѕ РµС‰С‘ РЅРµС‚ */
 		if (!isset($this->items[$class][$id]))
 		{
 			$this->items[$class][$id] = array(
@@ -281,17 +237,18 @@ class Cart extends Plugin
 			);
 		}
 
-		// Добавляем товары
+		// Р”РѕР±Р°РІР»СЏРµРј С‚РѕРІР°СЂС‹
 		$this->items[$class][$id]['count'] += $count;
+		$this->saveToCookies();
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Изменяет количество товара в корзине
+	 * РР·РјРµРЅСЏРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕРІР°СЂР° РІ РєРѕСЂР·РёРЅРµ
 	 *
-	 * @param string      $class   Класс товара (класс плагина товаров)
-	 * @param int|string  $id      Идентификатор товара
-	 * @param int         $amount  Новое количество добавляемых товаров
+	 * @param string      $class   РљР»Р°СЃСЃ С‚РѕРІР°СЂР° (РєР»Р°СЃСЃ РїР»Р°РіРёРЅР° С‚РѕРІР°СЂРѕРІ)
+	 * @param int|string  $id      РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РѕРІР°СЂР°
+	 * @param int         $amount  РќРѕРІРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РґРѕР±Р°РІР»СЏРµРјС‹С… С‚РѕРІР°СЂРѕРІ
 	 *
 	 * @return void
 	 *
@@ -299,6 +256,7 @@ class Cart extends Plugin
 	 */
 	public function changeAmount($class, $id, $amount)
 	{
+		$this->loadFromCookies();
 		if (
 			!isset($this->items[$class]) ||
 			!isset($this->items[$class][$id])
@@ -315,19 +273,22 @@ class Cart extends Plugin
 		{
 			$this->items[$class][$id]['count'] = $amount;
 		}
+		$this->saveToCookies();
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Возвращает содержимое корзины
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРѕРґРµСЂР¶РёРјРѕРµ РєРѕСЂР·РёРЅС‹
 	 *
-	 * @param string $class[optional]  Класс товаров
+	 * @param string $class  РљР»Р°СЃСЃ С‚РѕРІР°СЂРѕРІ
+	 *
 	 * @return array
 	 *
 	 * @since 1.00
 	 */
 	public function fetchItems($class = null)
 	{
+		$this->loadFromCookies();
 		$items = array();
 
 		if ($class !== null)
@@ -360,28 +321,30 @@ class Cart extends Plugin
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Удаляет товар из корзины
+	 * РЈРґР°Р»СЏРµС‚ С‚РѕРІР°СЂ РёР· РєРѕСЂР·РёРЅС‹
 	 *
-	 * @param string     $class  Класс товара
-	 * @param int|string $id     Идентификатор товара
+	 * @param string     $class  РљР»Р°СЃСЃ С‚РѕРІР°СЂР°
+	 * @param int|string $id     РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РѕРІР°СЂР°
 	 *
 	 * @return void
 	 *
 	 * @since 1.00
 	 */
 	public function removeItem($class, $id)
-	{
+	{ 
+		$this->loadFromCookies();
 		if (!isset($this->items[$class]))
 		{
 			return;
 		}
 
 		unset($this->items[$class][$id]);
+		$this->saveToCookies();
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Очищает корзину
+	 * РћС‡РёС‰Р°РµС‚ РєРѕСЂР·РёРЅСѓ
 	 *
 	 * @return void
 	 *
@@ -389,12 +352,14 @@ class Cart extends Plugin
 	 */
 	public function clearAll()
 	{
+		$this->loadFromCookies();
 		$this->items = array();
+		$this->saveToCookies();
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Отрисовывает блок корзины
+	 * РћС‚СЂРёСЃРѕРІС‹РІР°РµС‚ Р±Р»РѕРє РєРѕСЂР·РёРЅС‹
 	 *
 	 * @return string  HTML
 	 */
@@ -404,12 +369,15 @@ class Cart extends Plugin
 
 		$data = array('count' => 0, 'sum' => 0);
 
-		foreach ($this->items as $class)
+		if ($this->items)
 		{
-			foreach ($class as $item)
+			foreach ($this->items as $class)
 			{
-				$data['count'] += $item['count'];
-				$data['sum'] += $item['cost'] * $item['count'];
+				foreach ($class as $item)
+				{
+					$data['count'] += $item['count'];
+					$data['sum'] += $item['cost'] * $item['count'];
+				}
 			}
 		}
 
@@ -422,19 +390,23 @@ class Cart extends Plugin
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Загружает содержимое корзины из cookie
+	 * Р—Р°РіСЂСѓР¶Р°РµС‚ СЃРѕРґРµСЂР¶РёРјРѕРµ РєРѕСЂР·РёРЅС‹ РёР· cookie
 	 *
 	 * @return void
 	 */
 	private function loadFromCookies()
 	{
+		if ($this->items !== null)
+		{
+			return;
+		}
 		$this->items = array();
 
 		if (isset($_COOKIE[$this->name]))
 		{
 			$cookieValue = $_COOKIE[$this->name];
 			/*
-			 * В PHP до 5.3 при включённых "магических кавычках" в куки могут присутствовать лишние слэши
+			 * Р’ PHP РґРѕ 5.3 РїСЂРё РІРєР»СЋС‡С‘РЅРЅС‹С… "РјР°РіРёС‡РµСЃРєРёС… РєР°РІС‹С‡РєР°С…" РІ РєСѓРєРё РјРѕРіСѓС‚ РїСЂРёСЃСѓС‚СЃС‚РІРѕРІР°С‚СЊ Р»РёС€РЅРёРµ	СЃР»СЌС€Рё
 			 */
 			if (
 				! PHP::checkVersion('5.3') &&
@@ -446,7 +418,7 @@ class Cart extends Plugin
 
 			@$items = unserialize($cookieValue);
 
-			/* Проверяем, прошла ли десериализация */
+			/* РџСЂРѕРІРµСЂСЏРµРј, РїСЂРѕС€Р»Р° Р»Рё РґРµСЃРµСЂРёР°Р»РёР·Р°С†РёСЏ */
 			if ($items === false)
 			{
 				eresus_log(__METHOD__, LOG_NOTICE, 'Cannot unserialize cookie value: "%s"',
@@ -454,15 +426,14 @@ class Cart extends Plugin
 				return;
 			}
 
-			// Записываем результат
+			// Р—Р°РїРёСЃС‹РІР°РµРј СЂРµР·СѓР»СЊС‚Р°С‚
 			$this->items = $items;
 		}
-
 	}
 	//-----------------------------------------------------------------------------
 
 	/**
-	 * Сохраняет содержимое корзины в cookie
+	 * РЎРѕС…СЂР°РЅСЏРµС‚ СЃРѕРґРµСЂР¶РёРјРѕРµ РєРѕСЂР·РёРЅС‹ РІ cookie
 	 *
 	 * @return void
 	 */
