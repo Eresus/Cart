@@ -1,15 +1,12 @@
 <?php
 /**
- * [Краткое название плагина]
- *
- * Модульные тесты
+ * Тесты класса Cart
  *
  * @version ${product.version}
  *
- * @copyright [год], [владелец], [адрес, если нужен]
+ * @copyright 2013, Михаил Красильников, <m.krasilnikov@yandex.ru>
  * @license http://www.gnu.org/licenses/gpl.txt	GPL License 3
- * @author [Автор1 <E-mail автора1>]
- * @author [АвторN <E-mail автораN>]
+ * @author Михаил Красильников <m.krasilnikov@yandex.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -27,27 +24,37 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
- * @package [Имя пакета]
+ * @package Cart
  * @subpackage Tests
- *
- * $Id: AllTests.php 1263 2011-10-03 17:11:17Z mk $
  */
 
-
-require_once __DIR__ . '/../bootstrap.php';
-require_once TESTS_SRC_DIR . '/myplugin/classes/Class1.php';
+require_once __DIR__ . '/bootstrap.php';
 
 /**
- * @package [Имя пакета]
+ * Тесты класса Cart
+ * @package Cart
  * @subpackage Tests
  */
-class Class1_Test extends PHPUnit_Framework_TestCase
+class CartTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers Class1::method1
-	 */
-	public function test_method1()
-	{
-	}
-	//-----------------------------------------------------------------------------
+    /**
+     * @covers Cart::clientOnPageRender
+     */
+    public function testClientOnPageRender()
+    {
+        new Cart;
+        $cart = $this->getMockBuilder('Cart')->setMethods(array('clientRenderBlock'))
+            ->disableOriginalConstructor()->getMock();
+        $cart->expects($this->once())->method('clientRenderBlock')->will($this->returnValue('foo'));
+
+        $event = $this->getMockBuilder('stdClass')->setMockClassName('Eresus_Event_Render')
+            ->setMethods(array('setText', 'getText'))->getMock();
+        $event->expects($this->once())->method('getText')
+            ->will($this->returnValue(('bla $(Cart) bla')));
+        $event->expects($this->once())->method('setText')->with('bla foo bla');
+        /** @var Cart $cart */
+        /** @var Eresus_Event_Render $event */
+        $cart->clientOnPageRender($event);
+    }
 }
+

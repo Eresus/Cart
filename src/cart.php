@@ -127,10 +127,9 @@ class Cart extends Eresus_Plugin
     /**
      * Отрисовка блока корзины
      *
-     * @param string $html  HTML
-     * @return string  HTML
+     * @param Eresus_Event_Render $event
      */
-    public function clientOnPageRender($html)
+    public function clientOnPageRender(Eresus_Event_Render $event)
     {
         $page = Eresus_Kernel::app()->getPage();
 
@@ -138,9 +137,9 @@ class Cart extends Eresus_Plugin
         $page->linkScripts($this->urlCode . 'api.js');
 
         $block = $this->clientRenderBlock();
-        $html = preg_replace('/\$\(cart\)/ui', $block, $html);
+        $html = preg_replace('/\$\(cart\)/ui', $block, $event->getText());
 
-        return $html;
+        $event->setText($html);
     }
 
     /**
@@ -299,7 +298,7 @@ class Cart extends Eresus_Plugin
      *
      * @return string  HTML
      */
-    private function clientRenderBlock()
+    protected function clientRenderBlock()
     {
         $tmpl = $this->templates()->client('block.html');
 
