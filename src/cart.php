@@ -137,7 +137,7 @@ class Cart extends Eresus_Plugin
         $page->linkScripts($this->urlCode . 'api.js');
 
         $block = $this->clientRenderBlock();
-        $html = preg_replace('/\$\(cart\)/ui', $block, $event->getText());
+        $html = str_ireplace('$(cart)', $block, $event->getText());
 
         $event->setText($html);
     }
