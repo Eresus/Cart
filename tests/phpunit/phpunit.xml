@@ -3,13 +3,13 @@
 <phpunit>
 	<testsuites>
 		<testsuite name="All tests">
-			<directory>./</directory>
+			<directory suffix="Test.php">./</directory>
 		</testsuite>
 	</testsuites>
 
 	<filter>
 		<whitelist>
-			<directory>../src</directory>
+			<directory>../../src</directory>
 		</whitelist>
 	</filter>
 </phpunit>
