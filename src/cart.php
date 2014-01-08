@@ -30,7 +30,7 @@
  *
  * @package Cart
  */
-class Cart extends Plugin
+class Cart extends Eresus_Plugin
 {
     /**
      * Версия плагина
@@ -42,7 +42,7 @@ class Cart extends Plugin
      * Требуемая версия ядра
      * @var string
      */
-    public $kernel = '3.00b';
+    public $kernel = '3.01a';
 
     /**
      * Название плагина
@@ -86,67 +86,10 @@ class Cart extends Plugin
     {
         parent::__construct();
 
-        $this->listenEvents('clientOnStart', 'clientOnPageRender');
+        $evd = Eresus_Kernel::app()->getEventDispatcher();
+        $evd->addListener('cms.client.start', array($this, 'clientOnStart'));
+        $evd->addListener('cms.client.render_page', array($this, 'clientOnPageRender'));
     }
-
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Установка плагина
-     *
-     * @return void
-     */
-    public function install()
-    {
-        parent::install();
-
-        $Eresus = Eresus_CMS::getLegacyKernel();
-
-        $umask = umask(0000);
-        @mkdir($Eresus->fdata . 'cache');
-        umask($umask);
-
-        /* Копируем шаблоны */
-        $target = $Eresus->froot . 'templates/' . $this->name;
-        if (!FS::isDir($target))
-        {
-            $umask = umask(0000);
-            mkdir($target, 0777);
-            umask($umask);
-        }
-        $files = glob($this->dirCode . 'templates/*.html');
-        foreach ($files as $file)
-        {
-            copy($file, $target . '/' . basename($file));
-        }
-    }
-
-    //-----------------------------------------------------------------------------
-
-    /**
-     * Удаление плагина
-     *
-     * @return void
-     */
-    public function uninstall()
-    {
-        useLib('templates');
-        $templates = new Templates();
-
-        /* Удаляем шаблоны */
-        $list = $templates->enum($this->name);
-        $list = array_keys($list);
-        foreach ($list as $name)
-        {
-            $templates->delete($name, $this->name);
-        }
-
-        @rmdir(Eresus_CMS::getLegacyKernel()->froot . 'templates/' . $this->name);
-
-        parent::uninstall();
-    }
-
-    //-----------------------------------------------------------------------------
 
     /**
      * Обработка запросов от JS API
@@ -166,15 +109,12 @@ class Cart extends Plugin
                 $this->addItem(arg('class', 'word'), arg('id', 'word'), arg('count', 'int'),
                     arg('cost', '[^0-9\.]'));
                 break;
-
             case 'changeAmount':
                 $this->changeAmount(arg('class', 'word'), arg('id', 'word'), arg('amount', 'int'));
                 break;
-
             case 'clearAll':
                 $this->clearAll();
                 break;
-
             case 'removeItem':
                 $this->removeItem(arg('class', 'word'), arg('id', 'word'));
                 break;
@@ -183,8 +123,6 @@ class Cart extends Plugin
         $html = $this->clientRenderBlock();
         die($html);
     }
-
-    //-----------------------------------------------------------------------------
 
     /**
      * Отрисовка блока корзины
@@ -204,8 +142,6 @@ class Cart extends Plugin
 
         return $html;
     }
-
-    //-----------------------------------------------------------------------------
 
     /**
      * Добавляет товар в корзину
@@ -247,8 +183,6 @@ class Cart extends Plugin
         $this->saveToCookies();
     }
 
-    //-----------------------------------------------------------------------------
-
     /**
      * Изменяет количество товара в корзине
      *
@@ -281,8 +215,6 @@ class Cart extends Plugin
         }
         $this->saveToCookies();
     }
-
-    //-----------------------------------------------------------------------------
 
     /**
      * Возвращает содержимое корзины
@@ -326,8 +258,6 @@ class Cart extends Plugin
         return $items;
     }
 
-    //-----------------------------------------------------------------------------
-
     /**
      * Удаляет товар из корзины
      *
@@ -350,8 +280,6 @@ class Cart extends Plugin
         $this->saveToCookies();
     }
 
-    //-----------------------------------------------------------------------------
-
     /**
      * Очищает корзину
      *
@@ -366,8 +294,6 @@ class Cart extends Plugin
         $this->saveToCookies();
     }
 
-    //-----------------------------------------------------------------------------
-
     /**
      * Отрисовывает блок корзины
      *
@@ -375,7 +301,7 @@ class Cart extends Plugin
      */
     private function clientRenderBlock()
     {
-        $tmpl = new Template('templates/' . $this->name . '/block.html');
+        $tmpl = $this->templates()->client('block.html');
 
         $data = array('count' => 0, 'sum' => 0);
 
@@ -398,8 +324,6 @@ class Cart extends Plugin
         return $html;
     }
 
-    //-----------------------------------------------------------------------------
-
     /**
      * Загружает содержимое корзины из cookie
      *
@@ -413,26 +337,15 @@ class Cart extends Plugin
         }
         $this->items = array();
 
-        if (isset($_COOKIE[$this->name]))
+        if (isset($_COOKIE[$this->getName()]))
         {
-            $cookieValue = $_COOKIE[$this->name];
-            /*
-             * В PHP до 5.3 при включённых "магических кавычках" в куки могут присутствовать лишние	слэши
-             */
-            if (
-                !PHP::checkVersion('5.3') &&
-                get_magic_quotes_gpc()
-            )
-            {
-                $cookieValue = stripslashes($cookieValue);
-            }
-
+            $cookieValue = $_COOKIE[$this->getName()];
             @$items = unserialize($cookieValue);
 
             /* Проверяем, прошла ли десериализация */
             if ($items === false)
             {
-                eresus_log(__METHOD__, LOG_NOTICE, 'Cannot unserialize cookie value: "%s"',
+                Eresus_Kernel::log(__METHOD__, LOG_NOTICE, 'Cannot unserialize cookie value: "%s"',
                     $cookieValue);
                 return;
             }
@@ -442,8 +355,6 @@ class Cart extends Plugin
         }
     }
 
-    //-----------------------------------------------------------------------------
-
     /**
      * Сохраняет содержимое корзины в cookie
      *
@@ -452,8 +363,8 @@ class Cart extends Plugin
     private function saveToCookies()
     {
         $value = serialize($this->items);
-        setcookie($this->name, $value, time() + $this->settings['cookieLifeTime'] * 60 * 60 * 24, '/');
+        setcookie($this->getName(), $value,
+            time() + $this->settings['cookieLifeTime'] * 60 * 60 * 24, '/');
     }
-    //-----------------------------------------------------------------------------
-
 }
+
